@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AppDemoPhotoEditor</string>
+    <string name="todo">TODO</string>
+    <string name="pick_an_image_to_start">Pick an image to start!!!</string>
+</resources>
