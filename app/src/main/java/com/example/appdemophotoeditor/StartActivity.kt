@@ -54,15 +54,15 @@ class StartActivity : AppCompatActivity() {
                 override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
                     if (p0!!.areAllPermissionsGranted()) {
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+                        values.put(MediaStore.Images.Media.TITLE, "New picture")
                         values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
                         image_taken_by_camera_uri = contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             values
                         )
-                        val cameraIntent =
-                            Intent(MediaStore.EXTRA_OUTPUT, image_taken_by_camera_uri)
-                        startActivityForResult(cameraIntent, MainActivity.CAMERA_REQUEST)
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_taken_by_camera_uri)
+                        startActivityForResult(cameraIntent, MainActivity.Companion.CAMERA_REQUEST)
                     } else {
                         Toast.makeText(
                             applicationContext,
@@ -100,7 +100,7 @@ class StartActivity : AppCompatActivity() {
                     if (p0!!.areAllPermissionsGranted()) {
                         val intent = Intent(Intent.ACTION_PICK)
                         intent.type = "image/*"
-                        startActivityForResult(intent, MainActivity.PERMISSION_PICK_IMAGE)
+                        startActivityForResult(intent, MainActivity.Companion.PERMISSION_PICK_IMAGE)
                     } else {
                         Toast.makeText(
                             applicationContext,

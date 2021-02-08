@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">AppDemoPhotoEditor</string>
-    <string name="todo">TODO</string>
     <string name="pick_an_image_to_start">Pick an image to start!!!</string>
+    <string name="todo">TODO</string>
+    <string name="crop">Crop</string>
+    <string name="image">Image</string>
+    <string name="text">Text</string>
+    <string name="emoji">Emoji</string>
+    <string name="brush">Brush</string>
+    <string name="edit">Edit</string>
+    <string name="filters">Filters</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
