@@ -5,14 +5,16 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.appdemophotoeditor.`interface`.FiltersListFragmentListener
+import com.example.appdemophotoeditor.`interface`.*
 import com.example.appdemophotoeditor.fragment.FiltersListFragment
 import com.example.appdemophotoeditor.utils.BitmapUtils
 import com.karumi.dexter.Dexter
@@ -25,24 +27,31 @@ import com.zomato.photofilters.imageprocessors.Filter
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity(), FiltersListFragmentListener {
+class MainActivity : AppCompatActivity(), FiltersListFragmentListener, EditImageFragmentListener, AddTextFragmentListener,BrushFragmentListener,EmojiFragmentListener {
     companion object {
+        val pictureName: String? = "IU.jpg"
         const val PERMISSION_PICK_IMAGE = 1000
         const val PERMISSION_INSERT_IMAGE = 1001
         const val CAMERA_REQUEST = 1002
     }
 
     var image_selected_uri: Uri? = null
-    var onEdit = false
-    var originalBitmap: Bitmap? = null
-    var filteredBitmap: Bitmap? = null
-    var finalBitmap: Bitmap? = null
-    var filtersListFragment: FiltersListFragment? = null
-    var photoEditor: PhotoEditor? = null
+    private var onEdit = false
+    private var originalBitmap: Bitmap? = null
+    private var filteredBitmap: Bitmap? = null
+    private var finalBitmap: Bitmap? = null
+    private var filtersListFragment: FiltersListFragment? = null
+    private var photoEditor: PhotoEditor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        photoEditor = PhotoEditor.Builder(this, image_preview)
+            .setPinchTextScalable(true)
+            .setDefaultEmojiTypeface(Typeface.createFromAsset(assets, "emojione-android.ttf"))
+            .build()
+
+        loadImage()
         image_selected_uri = intent.data
         if (image_selected_uri != null) {
             setData(image_selected_uri)
@@ -56,6 +65,32 @@ class MainActivity : AppCompatActivity(), FiltersListFragmentListener {
         startActivity(intent)
     }
 
+    private fun loadImage() {
+        originalBitmap = BitmapUtils.getBitmapFromAssets(this, pictureName!!, 100, 100)
+        filteredBitmap = originalBitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        finalBitmap = originalBitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        image_preview?.source?.setImageBitmap(originalBitmap)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_open) {
+            openImageFromGallery()
+            return true
+        } else if (id == R.id.action_save && onEdit) {
+            saveImageToGallery()
+            return true
+        } else if (id == R.id.action_camera) {
+            openCamera()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveImageToGallery() {
+        //save image
+    }
+
     private fun setData(uri: Uri?) {
         edit_side?.visibility = View.VISIBLE
         onEdit = true
@@ -63,15 +98,14 @@ class MainActivity : AppCompatActivity(), FiltersListFragmentListener {
         originalBitmap?.recycle()
         finalBitmap?.recycle()
         filteredBitmap?.recycle()
+        originalBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        finalBitmap = originalBitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        filteredBitmap = originalBitmap?.copy(Bitmap.Config.ARGB_8888, true)
         image_preview.source.setImageBitmap(originalBitmap)
         bitmap?.recycle()
         filtersListFragment = FiltersListFragment.getInstance(originalBitmap)
         filtersListFragment?.let { FiltersListFragment.setListener(it, this) }
     }
-
-    /**
-     *
-     */
 
     private fun openImageFromGallery() {
         Dexter.withActivity(this)
@@ -203,11 +237,51 @@ class MainActivity : AppCompatActivity(), FiltersListFragmentListener {
         }
     }
 
-    /**
-     *
-     */
-
     override fun onFilterSelected(filter: Filter) {
-        TODO("Not yet implemented")
+
+    }
+
+    override fun onBrightnessChanged(brightness: Int) {
+
+    }
+
+    override fun onSaturationChanged(saturation: Float) {
+
+    }
+
+    override fun onConstraintChanged(constraint: Float) {
+
+    }
+
+    override fun onEditStarted() {
+
+    }
+
+    override fun onEditCompleted() {
+
+    }
+
+    override fun onAddTextButtonClick(typeface: Typeface, text: String, color: Int) {
+
+    }
+
+    override fun onBrushSizeChangeListener(size: Float) {
+
+    }
+
+    override fun onBrushOpacityChangeListener(opacity: Int) {
+
+    }
+
+    override fun onBrushColorChangeListener(color: Int) {
+
+    }
+
+    override fun onBrushStateChangeListener(isEraser: Boolean) {
+
+    }
+
+    override fun onEmojiSelected(emoji: String) {
+
     }
 }
